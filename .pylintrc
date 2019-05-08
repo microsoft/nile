@@ -1,0 +1,10 @@
+[FORMAT]
+max-line-length=120
+
+[MESSAGES CONTROL]
+disable =
+  broad-except,
+  no-self-use,
+  too-few-public-methods,
+  import-error,
+  unsubscriptable-object   # prevents this bug from failing builts in python 3.7
