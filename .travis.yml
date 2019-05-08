@@ -1,0 +1,31 @@
+language: python
+
+python:
+- 3.6
+
+services:
+- docker
+
+env:
+- DOCKER_PYTHON_VERSION=3.4
+- DOCKER_PYTHON_VERSION=3.5
+- DOCKER_PYTHON_VERSION=3.6
+- DOCKER_PYTHON_VERSION=3.7
+
+install:
+- docker build --target=build --build-arg PYTHON_VERSION="${DOCKER_PYTHON_VERSION}" -t "nile-py-${DOCKER_PYTHON_VERSION}" .
+- docker build --build-arg PYTHON_VERSION="${DOCKER_PYTHON_VERSION}" .
+
+script:
+- export CODE_COV=`bash <(curl -s https://codecov.io/env)`
+- docker run $CODE_COV "nile-py-${DOCKER_PYTHON_VERSION}"
+
+deploy:
+  skip_existing: true
+  provider: pypi
+  user: nmiodice
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+  password:
+    secure: lsPgVDMRKDK0xYMkLfcnHz39Q7Va969hpMA2VZe1TGnNNU1cJ970o5magtQ2e+9zNSpnq7UA/lDi6i/VeQAv32uClcCKTSZfov5ieMG8l5QNzIoQROZpWCf89NUhP9eH0Qfep9KmMm53XeO05BKbntdftq9q8lbeFnlvGInvc2aqG47XEyKfCbrJ1sIzZzwo5EPhf+HL3u+zUpVL6RZ6oeSDW+i5YgyYeTfX2WeUJcdBVnilbmFlI67UwF34BdMptghkpddATsc/N6U21imUQ1UTn8Sm04oDszc8iq1WD8BEzQ5uP2MCwjGEwCTrj7E5gadUIOlW1YL0xi47DFBxRbDw8rKTnTmZ9dyGW/wMpLxpIs0sO04GdQPM2NZwt4XjDfwURAsAnRQezKL7Ng4pHRJ8Z/AJ6h0vKmxEEFPzgc5qxwsJnhSNWsgcJunxJNgoZSf9s7UZBUuHTRGAkCmxIuLAb57WBbwO2cYytPlIRfK09aqxJRC7SmG/AoPqo5MY1w48Zly3gY4+rxiM81Y00juTCVf6q9iBsN6ZkquftLrj5K1nydCUsNQmGT3pwX9Y4PL/pq2Rwtojhlx2YfitYi6srKz1hQWduKuDlsKL6WqNatJX/PbNzuMld+aYBtRrFnwuvJEFZzdLaA29YooVC87UGmogTPiwkMPo8K7kPc8=
